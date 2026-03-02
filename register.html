@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Stocker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 bg-white p-4 rounded shadow">
+            <h2 class="text-center mb-4">Create Account</h2>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" id="fullName" required>
+                </div>
+                <div class="mb-3">
+                    <label>Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" required>
+                </div>
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label>Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div class="mb-3">
+                    <label>Upload ID/Driver's License</label>
+                    <input type="file" class="form-control" id="idPhoto" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+                <p class="text-center mt-3">Already have an account? <a href="login.html">Login</a></p>
+            </form>
+            <div id="status" class="mt-3 text-center"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCnSo34D6diIreXIpRiTGxOIrI8gDNwNik",
+    authDomain: "stocker-trade.firebaseapp.com",
+    projectId: "stocker-trade",
+    storageBucket: "stocker-trade.firebasestorage.app",
+    messagingSenderId: "344733501351",
+    appId: "1:344733501351:web:e32df233651499ccc75882"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  const form = document.getElementById("registerForm");
+  const status = document.getElementById("status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value;
+    const dob = document.getElementById("dob").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const password = document.getElementById("password").value;
+    const file = document.getElementById("idPhoto").files[0];
+
+    if(!file){
+      alert("Please upload your ID/Driver's License");
+      return;
+    }
+
+    status.innerText = "Creating account...";
+
+    try {
+        // 1. Create user
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // 2. Upload photo to Firebase Storage
+        const storageRef = storage.ref(`users/${user.uid}/idPhoto_${file.name}`);
+        const snapshot = await storageRef.put(file);
+        const photoURL = await snapshot.ref.getDownloadURL();
+
+        // 3. Save user info in Firestore
+        await db.collection("users").doc(user.uid).set({
+            fullName,
+            dob,
+            email,
+            phone,
+            photoURL,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 4. Save to localStorage for topbar
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userEmail", email);
+
+        status.innerHTML = "Account created successfully! Redirecting...";
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 1500);
+
+    } catch(err){
+        console.error(err);
+        status.innerText = err.message;
+    }
+  });
+</script>
+
+</body>
+</html>
