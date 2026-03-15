@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Stocker Admin Dashboard</title>
+
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#0f172a;
+color:white;
+}
+
+.card{
+background:#1e293b;
+border:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<button class="btn btn-danger mb-4" onclick="logout()">Logout</button>
+
+<h4>Users</h4>
+
+<table class="table table-dark">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Balance</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="userTable"></tbody>
+
+</table>
+
+<hr>
+
+<h4>Deposit Requests</h4>
+
+<table class="table table-dark">
+
+<thead>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="depositTable"></tbody>
+
+</table>
+
+<hr>
+
+<h4>Withdrawal Requests</h4>
+
+<table class="table table-dark">
+
+<thead>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="withdrawTable"></tbody>
+
+</table>
+
+</div>
+
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>

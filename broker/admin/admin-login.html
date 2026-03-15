@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Stocker Admin</title>
+
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#0f172a;
+color:white;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+width:350px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h3 class="text-center mb-4">Admin Login</h3>
+
+<input type="email" id="email" class="form-control mb-3" placeholder="Admin Email">
+
+<input type="password" id="password" class="form-control mb-3" placeholder="Password">
+
+<button class="btn btn-primary w-100" onclick="adminLogin()">Login</button>
+
+</div>
+
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>
